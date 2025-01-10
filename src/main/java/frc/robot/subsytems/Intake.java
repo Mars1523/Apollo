@@ -1,6 +1,6 @@
 package frc.robot.subsytems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix6.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
@@ -148,6 +148,7 @@ public class Intake extends SubsystemBase {
             }
         } else if (isFeeding) {
             transport.set(ControlMode.PercentOutput, .7);
+            intakeOne.set(ControlMode.PercentOutput, 0.5);
             intakeTwo.set(ControlMode.PercentOutput, 0.5);
 
         } else {

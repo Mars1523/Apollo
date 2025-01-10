@@ -1,6 +1,6 @@
 package frc.robot.subsytems;
 
-import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix6.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -35,8 +35,8 @@ public class Arms extends SubsystemBase {
     // }
 
     public void armsUp() {
-        arm1.set(TalonSRXControlMode.PercentOutput, 0.8);
-        arm2.set(TalonSRXControlMode.PercentOutput, 0.8);
+        arm1.set(TalonSRXControlMode.PercentOutput, 0.9);
+        arm2.set(TalonSRXControlMode.PercentOutput, 0.9);
     }
 
     public void armsDown() {
