@@ -6,9 +6,9 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-import com.revrobotics.CANSparkLowLevel;
-import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.spark.SparkLowLevel;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkBase.ControlType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -19,9 +19,9 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.Constants;
 
@@ -31,8 +31,8 @@ public class SwerveModule {
 
         // defines motors for a singular module
 
-        public final CANSparkMax driveMotor;
-        private final CANSparkMax turningMotor;
+        public final SparkMax driveMotor;
+        private final SparkMax turningMotor;
 
         // add encoder model later
 
@@ -61,7 +61,7 @@ public class SwerveModule {
         // SimpleMotorFeedforward(s, v);
         private final SimpleMotorFeedforward turnFeedforward = new SimpleMotorFeedforward(0.13943, 0.39686, 0.015295);
 
-        private SparkPIDController pidController;
+        private SparkClosedLoopController pidController;
 
         private final TrapezoidProfile.Constraints turnConstraints = new TrapezoidProfile.Constraints(
                         Float.POSITIVE_INFINITY,
@@ -80,8 +80,8 @@ public class SwerveModule {
                         double magnetOffset) {
                 // add motor name
                 // makes it so you can define motor channels for the modules in subsystem
-                driveMotor = new CANSparkMax(driveMotorID, MotorType.kBrushless);
-                turningMotor = new CANSparkMax(turningMotorID, MotorType.kBrushless);
+                driveMotor = new SparkMax(driveMotorID, MotorType.kBrushless);
+                turningMotor = new SparkMax(turningMotorID, MotorType.kBrushless);
                 turningMotor.restoreFactoryDefaults();
 
                 driveMotor.setInverted(driveMotorInverted);
