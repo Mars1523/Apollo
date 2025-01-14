@@ -1,10 +1,11 @@
 package frc.robot.subsytems;
 
-import com.kauailabs.navx.frc.AHRS;
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
 
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -42,7 +43,7 @@ public class SwerveSubsystem extends SubsystemBase {
         private final SwerveModule bLSwerve = new SwerveModule(17, 16, 21, true, true, 0.172);
         private final SwerveModule bRSwerve = new SwerveModule(11, 10, 18, true, true, -0.429);
 
-        private static AHRS gyro = new AHRS(SPI.Port.kMXP);
+        private static AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
 
         private LinearFilter hitFilter = LinearFilter.movingAverage(30);
 
@@ -213,27 +214,35 @@ public class SwerveSubsystem extends SubsystemBase {
         }
 
         public SwerveSubsystem() {
-                AutoBuilder.configureHolonomic(
+
+                RobotConfig config;
+                try {
+                        config = RobotConfig.fromGUISettings();
+                } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new RuntimeException(e);
+                }
+                AutoBuilder.configure(
                                 this::getPose, // Robot pose supplier
                                 this::resetOmetry, // Method to reset odometry (will be called if your auto has a
                                                    // starting pose)
                                 this::getSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-                                (ChassisSpeeds speeds) -> {
+                                (speeds, feedforwards) -> {
                                         var swerveModuleStates = DriveConstants.kinematics.toSwerveModuleStates(
                                                         ChassisSpeeds.discretize(speeds, .02));
                                         driveStates(swerveModuleStates);
                                 }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-                                new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live
+                                new PPHolonomicDriveController( // HolonomicPathFollowerConfig, this should likely live
                                                                  // in your
                                                                  // Constants class
                                                 new PIDConstants(.5, 0.0, 0.0), // Translation PID constants
-                                                new PIDConstants(3, 0.0, 0.0), // Rotation PID constants
-                                                1.5, // Max module speed, in m/s
-                                                0.3, // Drive base radius in meters. Distance from robot center to
+                                                new PIDConstants(3, 0.0, 0.0) // Rotation PID constants
+                                                 // Max module speed, in m/s // Drive base radius in meters. Distance from robot center to
                                                      // furthest module.
-                                                new ReplanningConfig() // Default path replanning config. See the API
+                                                // Default path replanning config. See the API
                                                                        // for the options here
                                 ),
+                                config,
                                 () -> {
                                         // Boolean supplier that controls when the path will be mirrored for the red
                                         // alliance

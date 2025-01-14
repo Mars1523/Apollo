@@ -11,6 +11,7 @@ import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+
 public class Intake extends SubsystemBase {
 
     VictorSPX intakeOne = new VictorSPX(8);
