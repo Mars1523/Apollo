@@ -4,6 +4,9 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.configs.*;
+
+import java.lang.constant.DirectMethodHandleDesc;
+
 import com.ctre.phoenix6.*;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.RelativeEncoder;
@@ -89,6 +92,7 @@ public class SwerveModule {
                 // add encoder name
                 // makes it so you can define encoder channels for the modules in subsystem
 
+
                 absoluteEncoder = new CANcoder(turningEncoderID);
 
                 // turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
@@ -149,6 +153,9 @@ public class SwerveModule {
                 driveConfig.encoder
                         .positionConversionFactor(drivePositionConversionFactor)
                         .velocityConversionFactor(drivePositionConversionFactor/60);
+                driveConfig.closedLoop
+                        .pid(1.0, 0, 0.1)
+                        .outputRange(-1, 1);
                 driveMotor.configure(driveConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
                 turningEncoder = turningMotor.getEncoder();
@@ -168,7 +175,7 @@ public class SwerveModule {
                 turnConfig.closedLoop
                         .pid(1.0,0.0, 0.1)
                         .outputRange(-1, 1);
-                turningMotor.configure(driveConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+                turningMotor.configure(turnConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
                 
                 // turningEncoder
                 //                 .setPositionConversionFactor(Math
@@ -179,7 +186,7 @@ public class SwerveModule {
                 //                                                 / 60);
                 turningEncoder.setPosition(getAbsRad());
 
-                SparkClosedLoopController turningPID = turningMotor.getClosedLoopController();
+                pidController = turningMotor.getClosedLoopController();
                 // turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
                 // pidController = turningMotor.getPIDController();
@@ -210,6 +217,7 @@ public class SwerveModule {
                                 driveEncoder.getPosition(), new Rotation2d(turningEncoder.getPosition()));
         }
 
+        
         public void setDesiredState(SwerveModuleState desiredState) {
                 // Optimize the reference state to avoid spinning further than 90 degrees
                 // SwerveModuleState state = optimizeModuleState(desiredState);
