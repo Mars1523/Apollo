@@ -9,11 +9,13 @@ import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.FileVersionException;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.constraint.MaxVelocityConstraint;
 
 //import com.ctre.phoenix.mechanisms.swerve.SwerveModule;
 
@@ -97,14 +99,16 @@ public class RobotContainer {
     swerveSub.resetOmetry(new Pose2d(1, 1, new Rotation2d()));
   }
 
+  PathConstraints pConstraints = new PathConstraints(1.0, 1.0, 1.0, 1.0);
   private void configureBindings() {
     new JoystickButton(primaryJoy, 3).whileTrue(new AutoAlignTags(swerveSub));
     // new JoystickButton(primaryJoy, 8).whileTrue(new PathPlannerAuto("New New
     // new JoystickButton(primaryJoy, 11).whileTrue(new PathPlannerAuto("RIGHTAUTO"));
     new JoystickButton(primaryJoy, 8).whileTrue(Commands.run(() -> {swerveSub.resetOmetry(new Pose2d(1,1, new Rotation2d()));}));
     new JoystickButton(primaryJoy, 9).whileTrue(Commands.run(() -> {System.out.println(swerveSub.getPose());}));
-    new JoystickButton(primaryJoy, 10).whileTrue(new NoteRotationAlign(swerveSub));
+    //new JoystickButton(primaryJoy, 10).whileTrue(new NoteRotationAlign(swerveSub));
     new JoystickButton(primaryJoy, 11).onTrue(Commands.runOnce(swerveSub::botposewithapriltag, swerveSub));
+    new JoystickButton(primaryJoy, 10).onTrue(climbCommand).onTrue(AutoBuilder.pathfindToPose(new Pose2d(1,1,new Rotation2d()), pConstraints, 0));
    // new JoystickButton(primaryJoy, 11).whileTrue(new AutoDriveAndTrackNote(swerveSub, 2.5, 0.3));
     // Auto"));
   }

@@ -7,6 +7,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -148,8 +149,64 @@ public class SwerveSubsystem extends SubsystemBase {
                 yawOffset = gyro.getRotation2d().minus(aprilRotation);
         }
         
+        boolean seenMT = false;
+        void mtVision() {
+                boolean useMegaTag2 = false; // set to false to use MegaTag1
+                boolean doRejectUpdate = false;
+                if (useMegaTag2 == false) {
+                        LimelightHelpers.PoseEstimate mt1 = LimelightHelpers
+                                        .getBotPoseEstimate_wpiBlue("limelight-back");
+
+                        if (mt1.tagCount == 1 && mt1.rawFiducials.length == 1) {
+                                if (mt1.rawFiducials[0] == null) {
+                                        return;
+                                }
+                                if (mt1.rawFiducials[0].ambiguity > .7) {
+                                        doRejectUpdate = true;
+                                }
+                                if (mt1.rawFiducials[0].distToCamera > 3) {
+                                        doRejectUpdate = true;
+                                }
+                        }
+                        if (mt1.tagCount == 0) {
+                                doRejectUpdate = true;
+                        }
+
+                        if (!doRejectUpdate) {
+                                seenMT = true;
+                                estimator.setVisionMeasurementStdDevs(VecBuilder.fill(2, 2, 5));
+                                estimator.addVisionMeasurement(
+                                                mt1.pose,
+                                                mt1.timestampSeconds);
+                        }
+                } else if (useMegaTag2 == true) {
+                        LimelightHelpers.SetRobotOrientation("limelight-back",
+                                        estimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+                        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers
+                                        .getBotPoseEstimate_wpiBlue_MegaTag2("limelight-back");
+                        if (Math.abs(gyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per
+                        // second, ignore vision updates
+                        {
+                                doRejectUpdate = true;
+                        }
+                        if (mt2.tagCount == 0) {
+                                doRejectUpdate = true;
+                        }
+                        if (!doRejectUpdate) {
+                                seenMT = true;
+                                estimator.setVisionMeasurementStdDevs(VecBuilder.fill(2, 2, 5));
+                                estimator.addVisionMeasurement(
+                                                mt2.pose,
+                                                mt2.timestampSeconds);
+
+                        }
+                }
+        }
+
         @Override
         public void periodic() {
+                mtVision();
+
                 // TODO Auto-generated method stub
                 estimator.update(
                                 getRotation(),
