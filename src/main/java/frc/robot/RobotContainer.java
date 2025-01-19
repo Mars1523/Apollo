@@ -69,7 +69,8 @@ public class RobotContainer {
     Arms.setDefaultCommand(climbCommand);
     configureBindings();
 
-    autoChooser.addOption("PathPlanner Line", AutoBuilder.followPath(PathPlannerPath.fromPathFile("Forward")));
+    autoChooser.addOption("PathPlanner Line", AutoBuilder.buildAuto("ForwardBack"));
+    autoChooser.addOption("PathPlanner Square", AutoBuilder.followPath(PathPlannerPath.fromPathFile("Square")));
     autoChooser.addOption("right", new RightAuto(swerveSub, shooter, mouth));
     autoChooser.addOption("center", new CenterAuto(swerveSub, shooter, mouth));
     autoChooser.addOption("left", new LeftAuto(swerveSub, shooter, mouth));
@@ -99,6 +100,7 @@ public class RobotContainer {
     new JoystickButton(primaryJoy, 3).whileTrue(new AutoAlignTags(swerveSub));
     // new JoystickButton(primaryJoy, 8).whileTrue(new PathPlannerAuto("New New
     // new JoystickButton(primaryJoy, 11).whileTrue(new PathPlannerAuto("RIGHTAUTO"));
+    new JoystickButton(primaryJoy, 8).whileTrue(Commands.run(() -> {swerveSub.resetOmetry(new Pose2d(1,1, new Rotation2d()));}));
     new JoystickButton(primaryJoy, 9).whileTrue(Commands.run(() -> {System.out.println(swerveSub.getPose());}));
     new JoystickButton(primaryJoy, 10).whileTrue(new NoteRotationAlign(swerveSub));
     new JoystickButton(primaryJoy, 11).onTrue(Commands.runOnce(swerveSub::botposewithapriltag, swerveSub));

@@ -233,8 +233,8 @@ public class SwerveSubsystem extends SubsystemBase {
                                 new PPHolonomicDriveController( // HolonomicPathFollowerConfig, this should likely live
                                                                  // in your
                                                                  // Constants class
-                                                new PIDConstants(6, 0.01, .0), // Translation PID constants
-                                                new PIDConstants(8, 0.007, 0.0) // Rotation PID constants
+                                                new PIDConstants(1, 0.0, .0), // Translation PID constants
+                                                new PIDConstants(1, 0.0, 0.0) // Rotation PID constants
                                                 // new PIDConstants(.5, 0.0, 0.0), // Translation PID constants
                                                 // new PIDConstants(3, 0.0, 0.0) // Rotation PID constants
                                                  // Max module speed, in m/s // Drive base radius in meters. Distance from robot center to
