@@ -7,6 +7,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -33,10 +34,6 @@ public class SwerveSubsystem extends SubsystemBase {
         private final SlewRateLimiter yRateLimiter = new SlewRateLimiter(2);
         private final SlewRateLimiter rotRateLimiter = new SlewRateLimiter(2);
 
-        private final Translation2d frontLeftLocation = new Translation2d(0.381, 0.381);
-        private final Translation2d frontRightLocation = new Translation2d(0.381, -0.381);
-        private final Translation2d backLeftLocation = new Translation2d(-0.381, 0.381);
-        private final Translation2d backRightLocation = new Translation2d(-0.381, -0.381);
 
         private final SwerveModule fLSwerve = new SwerveModule(15, 14, 20, true, true, -0.137);
         private final SwerveModule fRSwerve = new SwerveModule(13, 12, 19, true, true, 0);
@@ -47,8 +44,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
         private LinearFilter hitFilter = LinearFilter.movingAverage(30);
 
-        private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-                        frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation);
 
         public void drive(double xPercent, double yPercent, double rotPercent, boolean fieldRelative) {
                 drive(xPercent, yPercent, rotPercent, fieldRelative, 0, 0);
@@ -119,16 +114,22 @@ public class SwerveSubsystem extends SubsystemBase {
 
         public Rotation2d yawOffset = new Rotation2d();
 
-        SwerveDriveOdometry ometry = new SwerveDriveOdometry(
-                        kinematics,
-                        getRotation(),
-                        new SwerveModulePosition[] {
-                                        fLSwerve.getPosition(),
-                                        fRSwerve.getPosition(),
-                                        bLSwerve.getPosition(),
-                                        bRSwerve.getPosition()
-                        });
+        // SwerveDriveOdometry ometry = new SwerveDriveOdometry(
+        //                 DriveConstants.kinematics,
+        //                 getRotation(),
+        //                 new SwerveModulePosition[] {
+        //                                 fLSwerve.getPosition(),
+        //                                 fRSwerve.getPosition(),
+        //                                 bLSwerve.getPosition(),
+        //                                 bRSwerve.getPosition()
+        //                 });
 
+        SwerveDrivePoseEstimator estimator = new SwerveDrivePoseEstimator(
+                DriveConstants.kinematics, 
+                getRotation(), 
+                new SwerveModulePosition[] {fLSwerve.getPosition(), fRSwerve.getPosition(), bLSwerve.getPosition(), bRSwerve.getPosition()},
+                new Pose2d (1,1,new Rotation2d())
+                );
 
         public Rotation2d getRotation() {
                 return gyro.getRotation2d().minus(yawOffset);
@@ -152,7 +153,7 @@ public class SwerveSubsystem extends SubsystemBase {
         @Override
         public void periodic() {
                 // TODO Auto-generated method stub
-                ometry.update(
+                estimator.update(
                                 getRotation(),
                                 new SwerveModulePosition[] {
                                                 fLSwerve.getPosition(),
@@ -166,12 +167,11 @@ public class SwerveSubsystem extends SubsystemBase {
         }
 
         public Pose2d getPose() {
-                return ometry.getPoseMeters();
+                return estimator.getEstimatedPosition();
         }
 
-
         public void resetOmetry(Pose2d pose) {
-                ometry.resetPosition(
+                estimator.resetPosition(
                                 getRotation(),
                                 new SwerveModulePosition[] {
                                                 fLSwerve.getPosition(),
