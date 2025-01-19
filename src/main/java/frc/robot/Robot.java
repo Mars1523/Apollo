@@ -5,6 +5,12 @@
 package frc.robot;
 
 
+import java.io.IOException;
+
+import org.json.simple.parser.ParseException;
+
+import com.pathplanner.lib.util.FileVersionException;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -25,7 +31,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-    robotContainer = new RobotContainer();
+    try {
+      robotContainer = new RobotContainer();
+    } catch (FileVersionException | IOException | ParseException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     // this.autonomousCommand = robotContainer.getAutonomousCommand();
 
     // m_chooser.setDefaultOption("def", kDefaultAuto);

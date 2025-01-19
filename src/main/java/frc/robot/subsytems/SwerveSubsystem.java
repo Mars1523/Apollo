@@ -1,11 +1,11 @@
 package frc.robot.subsytems;
 
-import com.studica.frc.AHRS;
-import com.studica.frc.AHRS.NavXComType;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.LinearFilter;
@@ -19,13 +19,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.LimelightHelpers;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.command.autolime.AutoAlignTags;
+import frc.robot.LimelightHelpers;
 
 //add motor channel numbers later
 public class SwerveSubsystem extends SubsystemBase {
@@ -235,8 +233,10 @@ public class SwerveSubsystem extends SubsystemBase {
                                 new PPHolonomicDriveController( // HolonomicPathFollowerConfig, this should likely live
                                                                  // in your
                                                                  // Constants class
-                                                new PIDConstants(.5, 0.0, 0.0), // Translation PID constants
-                                                new PIDConstants(3, 0.0, 0.0) // Rotation PID constants
+                                                new PIDConstants(1, 0.0, .0), // Translation PID constants
+                                                new PIDConstants(1, 0.0, 0.0) // Rotation PID constants
+                                                // new PIDConstants(.5, 0.0, 0.0), // Translation PID constants
+                                                // new PIDConstants(3, 0.0, 0.0) // Rotation PID constants
                                                  // Max module speed, in m/s // Drive base radius in meters. Distance from robot center to
                                                      // furthest module.
                                                 // Default path replanning config. See the API
@@ -259,6 +259,7 @@ public class SwerveSubsystem extends SubsystemBase {
                 );
                 Shuffleboard.getTab("Debug").addDouble("drive velocity", this::getDriveMotorVelocity);
                 Shuffleboard.getTab("Debug").addDouble("drive velocity unfiltered", () -> fLSwerve.driveMotor.getEncoder().getVelocity());
+                Shuffleboard.getTab("Debug").addDouble("drive position unfiltered", () -> fLSwerve.driveMotor.getEncoder().getPosition());
                 Shuffleboard.getTab("Debug").addDouble("robot angle from april tags", () -> LimelightHelpers.getBotPose2d("limelight-back").getRotation().getDegrees());
                 Shuffleboard.getTab("Debug").addDouble("robot angle from navx", () -> gyro.getRotation2d().getDegrees());
                 Shuffleboard.getTab("Debug").addDouble("yaw offset", () -> yawOffset.getDegrees());
