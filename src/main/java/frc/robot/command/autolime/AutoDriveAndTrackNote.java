@@ -50,7 +50,6 @@ public class AutoDriveAndTrackNote extends Command {
     public void initialize() {
         startPosition = swerveSub.getPose().getTranslation();
         slew.reset(0);
-        swerveSub.uh = false;
         time = 0;
     }
 

@@ -78,7 +78,7 @@ public class RobotContainer {
     autoChooser.addOption("left", new LeftAuto(swerveSub, shooter, mouth));
     autoChooser.addOption("3_Note_Center", new ThreeNoteCenterAuto(swerveSub, shooter, mouth));
     autoChooser.addOption("rotate", new AutoRotate(swerveSub, 30, 0.25));
-    autoChooser.addOption("testPathplanner", AutoBuilder.buildAuto("testpath"));
+    autoChooser.addOption("testPathplanner", AutoBuilder.followPath(PathPlannerPath.fromPathFile("testpath")));
     // autoChooser.addOption("right",new ThreeAutoToRuleThemAll(swerveSub, shooter, mouth));
     Shuffleboard.getTab("auto").add(autoChooser);
     Shuffleboard.getTab("Drive").add("ResetClimb", new ResetClimb(Arms));
