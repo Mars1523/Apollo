@@ -57,9 +57,7 @@ public class SwerveSubsystem extends SubsystemBase {
                                 : new ChassisSpeeds(xSpeed, ySpeed, rot);
 
                 var swerveModuleStates2 = DriveConstants.kinematics.toSwerveModuleStates(
-                                ChassisSpeeds.discretize(chasSpeed, 0.2),
-                                new Translation2d(DriveConstants.kTrackBaseMeters,
-                                                DriveConstants.kTrackWidthMeters));
+                                ChassisSpeeds.discretize(chasSpeed, 0.2));
 
                 driveStates(swerveModuleStates2);
         }

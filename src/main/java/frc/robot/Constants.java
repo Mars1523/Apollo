@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.path.PathConstraints;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
@@ -32,6 +34,8 @@ public final class Constants {
     public static double kMaxAccelerationMetersPerSecondSquared = 4;
     public static Constraints kThetaControllerConstraints = new Constraints(
         DriveConstants.MaxAngularVelocityRadiansPerSecond * .5, (Math.PI * 2) / 2);
+    
+    public static PathConstraints constantConstraints = new PathConstraints(2.5,2,2.5*Math.PI,3*Math.PI);
 
   }
 
@@ -101,7 +105,7 @@ public final class Constants {
     // public static final double kPModuleDriveController = 1;
   }
 
-  public static final class OIConstants {
-    public static final int kDriverControllerPort = 0;
-  }
+  
+
+
 }

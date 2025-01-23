@@ -94,7 +94,7 @@ public class SwerveModule {
                                 .pid(1.0, 0, 0.1)
                                 .outputRange(-1, 1);
                 driveMotor.configure(driveConfig, SparkBase.ResetMode.kNoResetSafeParameters,
-                                SparkBase.PersistMode.kPersistParameters);
+                                SparkBase.PersistMode.kNoPersistParameters);
 
                 turningEncoder = turningMotor.getEncoder();
 
@@ -105,7 +105,7 @@ public class SwerveModule {
                 SparkMaxConfig turnConfig = new SparkMaxConfig();
                 turnConfig
                                 .inverted(driveMotorInverted)
-                                .idleMode(SparkBaseConfig.IdleMode.kCoast)
+                                .idleMode(SparkMaxConfig.IdleMode.kCoast)
                                 .smartCurrentLimit(20);
                 turnConfig.encoder
                                 .positionConversionFactor(turningPositionConversionFactor)
@@ -113,8 +113,8 @@ public class SwerveModule {
                 turnConfig.closedLoop
                                 .pid(1.0, 0.0, 0.1)
                                 .outputRange(-1, 1);
-                turningMotor.configure(turnConfig, SparkBase.ResetMode.kResetSafeParameters,
-                                SparkBase.PersistMode.kPersistParameters);
+                turningMotor.configure(turnConfig, SparkMax.ResetMode.kResetSafeParameters,
+                                SparkMax.PersistMode.kNoPersistParameters);
 
                 turningEncoder.setPosition(getAbsRad());
 
