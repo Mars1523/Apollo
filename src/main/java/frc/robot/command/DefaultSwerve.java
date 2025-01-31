@@ -20,6 +20,10 @@ public class DefaultSwerve extends Command {
         this.joy = joy;
     }
 
+    private double signedPow(double a, double pow){
+        return Math.copySign(Math.pow(a, pow), a);
+    }
+
     @Override
     public void initialize() {
     }
@@ -37,6 +41,11 @@ public class DefaultSwerve extends Command {
         var ySpeed = (MathUtil.applyDeadband(-joy.getX(), 0.1));
         var rot = (MathUtil.applyDeadband(-joy.getTwist(), 0.1));
 
+        xSpeed = signedPow(xSpeed, 2);
+        ySpeed = signedPow(ySpeed, 2);
+        rot = signedPow(rot, 2);
+
+        System.out.println(xSpeed);
         if (!joy.getTrigger()) {
             xSpeed *= 0.5;
             ySpeed *= 0.5;

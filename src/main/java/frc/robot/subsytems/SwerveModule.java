@@ -97,7 +97,7 @@ public class SwerveModule {
                                 SparkBase.PersistMode.kNoPersistParameters);
 
                 turningEncoder = turningMotor.getEncoder();
-
+                
                 double turningPositionConversionFactor = Math
                                 .toRadians(Constants.ModuleConstants.TurningEncoderDegreesPerPulse);
 
