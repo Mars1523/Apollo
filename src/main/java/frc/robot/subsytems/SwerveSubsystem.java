@@ -25,6 +25,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.subsytems.swerve.CanCoderConfig;
+import frc.robot.subsytems.swerve.SwerveModule;
 import frc.robot.LimelightHelpers;
 
 //add motor channel numbers later
@@ -34,10 +36,22 @@ public class SwerveSubsystem extends SubsystemBase {
         private final SlewRateLimiter yRateLimiter = new SlewRateLimiter(2);
         private final SlewRateLimiter rotRateLimiter = new SlewRateLimiter(2);
 
-        private final SwerveModule fLSwerve = new SwerveModule(15, 14, 20, true, true, -0.137);
-        private final SwerveModule fRSwerve = new SwerveModule(13, 12, 19, true, true, 0);
-        private final SwerveModule bLSwerve = new SwerveModule(17, 16, 21, true, true, 0.172);
-        private final SwerveModule bRSwerve = new SwerveModule(11, 10, 18, true, true, -0.429);
+        // private final SwerveModule fLSwerve = new SwerveModule(15, 14, 20, true,
+        // true, -0.137);
+        // private final SwerveModule fRSwerve = new SwerveModule(13, 12, 19, true,
+        // true, 0);
+        // private final SwerveModule bLSwerve = new SwerveModule(17, 16, 21, true,
+        // true, 0.172);
+        // private final SwerveModule bRSwerve = new SwerveModule(11, 10, 18, true,
+        // true, -0.429);
+        private final SwerveModule fLSwerve = new SwerveModule(15, 14, true, true,
+                        new CanCoderConfig(20, -0.137));
+        private final SwerveModule fRSwerve = new SwerveModule(13, 12, true, true,
+                        new CanCoderConfig(19, 0));
+        private final SwerveModule bLSwerve = new SwerveModule(17, 16, true, true,
+                        new CanCoderConfig(21, 0.172));
+        private final SwerveModule bRSwerve = new SwerveModule(11, 10, true, true,
+                        new CanCoderConfig(18, -0.429));
 
         private static AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
 

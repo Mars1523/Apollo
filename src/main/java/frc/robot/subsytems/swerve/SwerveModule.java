@@ -1,8 +1,5 @@
-package frc.robot.subsytems;
+package frc.robot.subsytems.swerve;
 
-import com.ctre.phoenix6.configs.MagnetSensorConfigs;
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase;
@@ -24,7 +21,7 @@ public class SwerveModule {
 
         private final RelativeEncoder driveEncoder;
         private final RelativeEncoder turningEncoder;
-        private final CANcoder absoluteEncoder;
+        // private final CANcoder absoluteEncoder;
 
         // i i i ffffffffffffffffffff
         // SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.18359,
@@ -40,34 +37,38 @@ public class SwerveModule {
                         Float.POSITIVE_INFINITY,
                         200 * 2);
 
-        public double getAbsRad() {
-                return absoluteEncoder.getAbsolutePosition().getValueAsDouble() * Math.PI * 2;
+        // public double getAbsRad() {
+        // return absoluteEncoder.getAbsolutePosition().getValueAsDouble() * Math.PI *
+        // 2;
+        // }
+
+        public interface SwerveEncoder {
+                public Rotation2d getAbsAngle();
         }
 
         public SwerveModule(
                         int driveMotorID,
                         int turningMotorID,
-                        int turningEncoderID,
                         boolean driveMotorInverted,
                         boolean turningMotorInverted,
-                        double magnetOffset) {
+                        SwerveEncoder encoder) {
                 driveMotor = new SparkMax(driveMotorID, MotorType.kBrushless);
                 turningMotor = new SparkMax(turningMotorID, MotorType.kBrushless);
 
-                absoluteEncoder = new CANcoder(turningEncoderID);
+                // absoluteEncoder = new CANcoder(turningEncoderID);
 
-                var config = new MagnetSensorConfigs();
-                config.withAbsoluteSensorDiscontinuityPoint(0.5);
-                config.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+                // var config = new MagnetSensorConfigs();
+                // config.withAbsoluteSensorDiscontinuityPoint(0.5);
+                // config.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 
-                if (magnetOffset <= 0) {
-                        config.MagnetOffset = (-magnetOffset) - .5;
-                } else {
-                        config.MagnetOffset = (-magnetOffset) + .5;
-                }
+                // if (magnetOffset <= 0) {
+                // config.MagnetOffset = (-magnetOffset) - .5;
+                // } else {
+                // config.MagnetOffset = (-magnetOffset) + .5;
+                // }
 
-                absoluteEncoder.getConfigurator().apply(config);
-                absoluteEncoder.getAbsolutePosition().setUpdateFrequency(100, 250);
+                // absoluteEncoder.getConfigurator().apply(config);
+                // absoluteEncoder.getAbsolutePosition().setUpdateFrequency(100, 250);
 
                 driveMotor.setControlFramePeriodMs(100);
                 driveMotor.setControlFramePeriodMs(20);
@@ -97,7 +98,7 @@ public class SwerveModule {
                                 SparkBase.PersistMode.kNoPersistParameters);
 
                 turningEncoder = turningMotor.getEncoder();
-                
+
                 double turningPositionConversionFactor = Math
                                 .toRadians(Constants.ModuleConstants.TurningEncoderDegreesPerPulse);
 
@@ -116,7 +117,7 @@ public class SwerveModule {
                 turningMotor.configure(turnConfig, SparkMax.ResetMode.kResetSafeParameters,
                                 SparkMax.PersistMode.kNoPersistParameters);
 
-                turningEncoder.setPosition(getAbsRad());
+                turningEncoder.setPosition(encoder.getAbsAngle().getRadians());
 
                 pidController = turningMotor.getClosedLoopController();
         }
